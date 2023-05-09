@@ -1,69 +1,40 @@
 
 
-er_UI <- function(id, state_vec, hcf_category_vec) {
+mapUI <- function(id) {
   ns <- NS(id)
-  tagList(fluidPage(
-               fluidRow(
-                 column(3,
-                        fileInput("upload", "Upload Reference geodata file"),
-                        hr(),
-                        br(),
-                        textAreaInput(inputId = ns("incidentAddress"),
-                                      label = "Incident Address: ",
-                                      value = ""),
-                        selectInput(inputId = ns("incidentState"),
-                                    label = "Select State:",
-                                    choices = c(Choose='', state_vec)),
-                        
-                        selectInput(inputId = ns('facilityCategory'), 
-                                    label = 'Select Facility Category:',
-                                    choices = c(Choose='', hcf_category_vec), 
-                                    selectize=TRUE),
-                        actionButton(inputId = ns("erSubmitButton"),
-                                     label = "Submit"),
-                        br()
-                 ),
-                 column(9,
-                        h3("Closest Health Facilities"),
-                        leafletOutput(outputId = ns("nnHCF"))
-                 )
-               )
-             )
+  tagList(
+    h3("Closest Health Facilities"),
+    leafletOutput(outputId = ns("nnHCF"))
   )
 }
 
 # I removed ", dataset" from the function argument
-er_Server <- function(id) {
+mapServer <- function(id, dataset, state, address, facility_category, action_btn) {
+  
   moduleServer(
     id,
     function(input, output, session) {
-     
-     m <- eventReactive(input$erSubmitButton, {
-       
-       sf_df <- st_read(input$upload$datapath)
-       
-        # replaced dataset with sf_df
-        national_hcf_filtered <- sf_df |> 
-            filter(state_name == input$incidentState, 
-                   category == input$facilityCategory, 
+      
+     m <- eventReactive(action_btn(), {
+
+          national_hcf_filtered <- dataset() |> 
+            filter(state_name == state(), 
+                   category == facility_category(), 
                    functional_status == "Functional") |> 
             select(latitude, longitude,name) |> 
             rowid_to_column(var = "hcf_id")
           
-        
-        #"Ojota Chemical Market, Ojota, Lagos"
-        
-        
+
         # * Geocoding: Address -> Lat Long ----
         
-        # convert to geometry
-        inc_locations_latlon_tbl_sf <- geo(input$incidentAddress, 
+        # convert address to geometry
+        inc_locations_latlon_tbl_sf <- geo(address(), 
                                            method = "arcgis") |> 
           st_as_sf(
             coords = c("long", "lat"),
             crs    = 4326
           ) |> 
-          left_join(geo(input$incidentAddress, 
+          left_join(geo(address(), 
                         method = "arcgis")) |> 
           rowid_to_column(var = "inc_id")
         
@@ -86,7 +57,7 @@ er_Server <- function(id) {
           network_ids <- st_nn(
             x = inc_locations_latlon_tbl_sf, 
             y = national_hcf_filtered, 
-            k = 3,
+            k = 5,
             #k = nrow(national_hcf_filtered),
             progress = T
           )
