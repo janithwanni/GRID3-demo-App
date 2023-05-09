@@ -31,6 +31,7 @@ uploadServer <- function(id) {
       sf_data <- reactive({
         req(input$upload)
         sf_tbl = sf::st_read(input$upload$datapath)
+        # sf_tbl = sf::st_read("data/national-health-care-facilities/health-care-facilities-primary-secondary-and-tertiary.geojson")
       })
       
       return(sf_data)
@@ -42,7 +43,7 @@ uploadServer <- function(id) {
           address      = shiny::reactive(input$incidentAddress),
           state        = shiny::reactive(input$incidentState),
           fac_category = shiny::reactive(input$facilityCategory),
-          action_btn   = shiny::reactive(input$submit)
+          action_btn   = shiny::reactive(input$erSubmitButton)
         )
       )
     }
