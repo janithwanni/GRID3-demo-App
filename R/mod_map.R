@@ -7,7 +7,7 @@ mapUI <- function(id) {
   )
 }
 
-# I removed ", dataset" from the function argument
+
 mapServer <- function(id, dataset, state, address, facility_category, action_btn) {
   
   moduleServer(
