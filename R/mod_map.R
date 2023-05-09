@@ -1,5 +1,4 @@
 
-
 mapUI <- function(id) {
   ns <- NS(id)
   tagList(

@@ -1,11 +1,6 @@
 
-library(bslib)
 library(shiny)
 library(shinyjs)
-library(bsicons)
-
-library(DT)
-library(thematic)
 
 library(osmdata)    # Open Street Map Overpass API
 library(osrm)       # Open Street Map Routing API
@@ -17,15 +12,6 @@ library(leaflet)
 library(tidygeocoder) # Used for geocoding
 library(tidyverse)  # Core tidy libs
 
-
-custom_theme <- bs_theme(
-  version = 5,
-  bg = "#FFFFFF",
-  fg = "#000000",
-  primary = "#0199F8",
-  secondary = "#FF374B",
-  base_font = "Maven Pro"
-)
 
 # selectIput data
 selectInput_data <- readRDS(file = "data/select_item_data.rds")
