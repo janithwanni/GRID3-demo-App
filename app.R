@@ -21,7 +21,7 @@ ui <- shiny::fluidPage(
   shinyjs::useShinyjs(),
   
   # Application title
-  titlePanel("Modules Tutorial"),
+  titlePanel("Working with GRID3 Geospatial Dataset"),
   
   sidebarLayout(
     sidebarPanel(

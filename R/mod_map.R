@@ -2,7 +2,7 @@
 mapUI <- function(id) {
   ns <- NS(id)
   tagList(
-    h3("Closest Health Facilities"),
+    h3("Determine the Closest Health Facilities"),
     leafletOutput(outputId = ns("nnHCF"))
   )
 }
