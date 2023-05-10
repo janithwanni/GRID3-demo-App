@@ -15,7 +15,7 @@ library(tidyverse)  # Core tidy libs
 
 # selectIput data
 selectInput_data <- readRDS(file = "data/select_item_data.rds")
-#sf_tbl = sf::st_read("data/national-health-care-facilities/health-care-facilities-primary-secondary-and-tertiary.geojson")
+#sf_tbl = sf::st_read("data/health-care-facilities-primary-secondary-and-tertiary.geojson")
 
 ui <- shiny::fluidPage(
   
