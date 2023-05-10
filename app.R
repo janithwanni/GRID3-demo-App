@@ -15,6 +15,8 @@ library(tidyverse)  # Core tidy libs
 
 # selectIput data
 selectInput_data <- readRDS(file = "data/select_item_data.rds")
+hcf_f_status <- readRDS("data/func_status.rds")
+sf_tbl = sf::st_read("data/national-health-care-facilities/health-care-facilities-primary-secondary-and-tertiary.geojson")
 
 ui <- shiny::fluidPage(
   
@@ -25,13 +27,16 @@ ui <- shiny::fluidPage(
   
   sidebarLayout(
     sidebarPanel(
-      uploadUI("upload_ui",state_vec=selectInput_data$state_values, 
-            hcf_category_vec=selectInput_data$category_values)
-      
+      uploadUI("upload"),
+      searchUI("search",
+               state_vec = selectInput_data$state_values,
+               hcf_category_vec=selectInput_data$category_values,
+               hcf_func_status = hcf_f_status)
     ),
     
     mainPanel(
-      mapUI("er_map")
+      
+      mapUI("map")
     )
   )
 )
@@ -40,14 +45,20 @@ ui <- shiny::fluidPage(
 server <- function(input, output, session) {
   options(shiny.maxRequestSize = 50*1024^2)
   
-  queryVals <- uploadServer(id = "upload_ui")
+  df_data <- uploadServer(id = "upload")
   
+  searchVals <- searchServer(id = "search")
+
+  
+  # dataset, address, state, hcf_category, hcf_func_status, action_btn
   mapServer(id = "er_map", 
-            dataset = queryVals()$df, 
-            state   = queryVals()$state, 
-            address = queryVals()$address, 
-            facility_category = queryVals()$fac_category, 
-            action_btn = queryVals()$action_btn)
+            dataset = df_data(),
+            state   = searchVals$state,
+            address = searchVals$address,
+            hcf_category = searchVals$fac_category,
+            hcf_func_status = searchVals$fac_category,
+            action_btn = searchVals$action_btn
+            )
   
 }
 

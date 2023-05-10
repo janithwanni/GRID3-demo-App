@@ -8,18 +8,19 @@ mapUI <- function(id) {
 }
 
 
-mapServer <- function(id, dataset, state, address, facility_category, action_btn) {
+mapServer <- function(id, dataset, address, state, 
+                      hcf_category, hcf_func_status, action_btn) {
   
   moduleServer(
     id,
     function(input, output, session) {
       
-     m <- eventReactive(action_btn(), {
+     m <- eventReactive(action_btn, {
 
           national_hcf_filtered <- dataset() |> 
-            filter(state_name == state(), 
-                   category == facility_category(), 
-                   functional_status == "Functional") |> 
+            filter(state_name == state, 
+                   category == hcf_category, 
+                   functional_status == hcf_func_status) |> 
             select(latitude, longitude,name) |> 
             rowid_to_column(var = "hcf_id")
           
@@ -27,13 +28,13 @@ mapServer <- function(id, dataset, state, address, facility_category, action_btn
         # * Geocoding: Address -> Lat Long ----
         
         # convert address to geometry
-        inc_locations_latlon_tbl_sf <- geo(address(), 
+        inc_locations_latlon_tbl_sf <- geo(address, 
                                            method = "arcgis") |> 
           st_as_sf(
             coords = c("long", "lat"),
             crs    = 4326
           ) |> 
-          left_join(geo(address(), 
+          left_join(geo(address, 
                         method = "arcgis")) |> 
           rowid_to_column(var = "inc_id")
         
