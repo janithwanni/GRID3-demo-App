@@ -49,14 +49,14 @@ server <- function(input, output, session) {
   
   searchVals <- searchServer(id = "search")
 
-  
+  # address,state,fac_category,func_status,action_btn
   # dataset, address, state, hcf_category, hcf_func_status, action_btn
   mapServer(id = "er_map", 
             dataset = df_data(),
             state   = searchVals$state,
             address = searchVals$address,
             hcf_category = searchVals$fac_category,
-            hcf_func_status = searchVals$fac_category,
+            hcf_func_status = searchVals$func_status,
             action_btn = searchVals$action_btn
             )
   

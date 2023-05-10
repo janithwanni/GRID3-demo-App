@@ -36,6 +36,7 @@ searchServer <- function(id) {
       address      <- reactive(input$incidentAddress)
       state        <- reactive(input$incidentState)
       fac_category <- reactive(input$facilityCategory)
+      func_status <- reactive(input$functional_status)
       action_btn   <- reactive(input$erSubmitButton)
       
       return(
@@ -43,6 +44,7 @@ searchServer <- function(id) {
           address,
           state,
           fac_category,
+          func_status,
           action_btn
         )
       )
