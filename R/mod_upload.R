@@ -20,10 +20,13 @@ uploadServer <- function(id) {
         validate(need(input$upload, message = FALSE))
         input$upload
       })
-      
-      sf_data <- eventReactive(input$submit_btn, {
+
+      sf_data <- reactiveVal(NULL)
+
+      observe({
+        req(!is.null(userFile()))
         sf_tbl = sf::st_read(userFile()$datapath)
-        # sf_tbl = sf::st_read("data/national-health-care-facilities/health-care-facilities-primary-secondary-and-tertiary.geojson")
+        sf_data(sf_tbl)
       })
       # Return the reactive that yields the data frame
       return(sf_data)

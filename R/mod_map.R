@@ -8,16 +8,21 @@ mapUI <- function(id) {
 }
 
 
-mapServer <- function(id, dataset, address, state, 
-                      hcf_category, hcf_func_status, action_btn) {
+mapServer <- function(id, dataset, searchVals) {
   
   moduleServer(
     id,
     function(input, output, session) {
-      
-     m <- eventReactive(action_btn, {
 
-          national_hcf_filtered <- dataset() |> 
+      output$nnHCF <- renderLeaflet({
+        req(!is.null(dataset()), !is.null(searchVals()))
+
+        state   = searchVals()$state
+        address = searchVals()$address
+        hcf_category = searchVals()$fac_category
+        hcf_func_status = searchVals()$func_status
+
+        national_hcf_filtered <- dataset() |> 
             filter(state_name == state, 
                    category == hcf_category, 
                    functional_status == hcf_func_status) |> 
@@ -87,10 +92,6 @@ mapServer <- function(id, dataset, address, state,
             network_lines_sf,
             color      = "yellow"
           )
-        m
-      })
-      
-      output$nnHCF <- renderLeaflet({
         m()@map
       })
     }

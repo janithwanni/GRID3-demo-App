@@ -30,23 +30,21 @@ searchServer <- function(id) {
   moduleServer(
     id,
     function(input, output, session) {
-      
-      shinyjs::click(id = "erSubmitButton")
-      
-      address      <- reactive(input$incidentAddress)
-      state        <- reactive(input$incidentState)
-      fac_category <- reactive(input$facilityCategory)
-      func_status <- reactive(input$functional_status)
-      action_btn   <- reactive(input$erSubmitButton)
+
+      searchVals <- reactiveVal(NULL)
+      observeEvent(input$erSubmitButton, {
+        searchVals(
+          list(
+            address = input$incidentAddress,
+            state = input$incidentState,
+            fac_category = input$facilityCategory,
+            func_status = input$functional_status
+          )
+        )
+      })
       
       return(
-        list(
-          address,
-          state,
-          fac_category,
-          func_status,
-          action_btn
-        )
+        searchVals
       )
     }
   )
